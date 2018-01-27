@@ -73,7 +73,7 @@ function create() {
 
     tumba = game.add.sprite(200, 360, 'tumba');
     tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-
+		game.physics.enable(tumba);
     game.physics.enable(sprite);
     game.camera.follow(sprite);
 
@@ -139,9 +139,17 @@ function collisionHandler(bullet) {
 }
 
 function update() {
-
+		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
+			game.physics.arcade.moveToObject(tumba, sprite, 220);
+		} else {
+			tumba.body.velocity.set(0);
+		}
+		game.physics.arcade.collide(sprite, tumba, () => {
+			sprite.kill();
+		});
     game.physics.arcade.collide(sprite, layer);
-    game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+		game.physics.arcade.collide(tumba, layer);
+		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
@@ -171,7 +179,7 @@ function update() {
     }
 
     if (cursors.up.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('up');
         if(currentY == 0) {
             sprite.body.velocity.y = 0;
         } else {
@@ -179,7 +187,7 @@ function update() {
         }
     }
     if (cursors.down.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('down');
         if(currentY == gameHeight - 1) {
             sprite.body.velocity.y = 0;
         } else {
