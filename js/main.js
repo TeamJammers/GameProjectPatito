@@ -8,11 +8,7 @@ function preload() {
     game.load.image('bullet', 'assets/bullet.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
-    // game.load.image('car', 'assets/starstruck/dude.png');
-    //music
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
-
-
 }
 
 var map;
