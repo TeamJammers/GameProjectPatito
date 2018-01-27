@@ -60,7 +60,7 @@ function create() {
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
-    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 
 }
 
