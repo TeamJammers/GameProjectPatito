@@ -35,7 +35,18 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var timeString;
+var timeText;
+
 var chuta;
+
+
+//time of level
+ 
+var minutes;
+var seconds;
+
+
 function create() {
 
     //title
@@ -89,6 +100,20 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.sound.setDecodedCallback(sounds, start, this);
+
+
+    var style = { fill : "#FFFFFF" };
+    timeText = game.add.text(200, 200, timeString, style);
+
+    seconds = 0;
+    minutes = 0;
+
+    seconds = Number.parseInt(seconds);
+    minutes = Number.parseInt(minutes);
+
+    var timer = game.time.create();
+    timer.repeat(1 * Phaser.Timer.SECOND, 7200, updateTime, this);
+    timer.start();
 
 }
 
@@ -220,3 +245,24 @@ function bulletHitPlayer (tank, bullet) {
     bullet.kill();
 }
 
+
+function updateTime() {
+    seconds = Number.parseInt(seconds);
+    minutes = Number.parseInt(minutes);
+    if( seconds == 60){
+
+        
+        seconds = 0;
+        minutes +=1; 
+    }
+    seconds += 1;
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+
+    timeString =  minutes + ":" + seconds;
+    timeText.text = timeString;
+}
