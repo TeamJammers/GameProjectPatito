@@ -9,6 +9,10 @@ function preload() {
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     // game.load.image('car', 'assets/starstruck/dude.png');
+    //music
+    game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+
+
 }
 
 var map;
@@ -32,7 +36,13 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var chuta;
 function create() {
+
+    //title
+    var style = { font: "65px Arial", fill: "#52bace", align: "center" };
+    text = game.add.text(game.world.centerX, 100, "Bienvenidos al Carnaval 2018", style);
+    text.anchor.set(0.5);
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -44,8 +54,22 @@ function create() {
 
     layer.resizeWorld();
 
+
     sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
+
+
+    turret = game.add.sprite(0, 0,'turret');
+    turret.visible = false;
+
+
+    turret.anchor.setTo(0.3, 0.5);
+    //audio
+    chuta = game.add.audio('chuta');
+    sounds = [ chuta];
+
+
+    // sprite.anchor.setTo(0.5, 0.5);
 
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -54,16 +78,6 @@ function create() {
     game.physics.enable(sprite);
 
     game.camera.follow(sprite);
-
-    cursors = game.input.keyboard.createCursorKeys();
-
-
-    turret = game.add.sprite(0, 0,'turret');
-    turret.visible = false;
-
-
-    turret.anchor.setTo(0.3, 0.5);
-
 
     bullets = game.add.group();
     bullets.enableBody = true;
@@ -74,7 +88,52 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
 
+
     cursors = game.input.keyboard.createCursorKeys();
+
+    game.sound.setDecodedCallback(sounds, start, this);
+
+}
+
+function start() {
+
+    sounds.shift();
+
+    chuta.loopFull(0.6);
+    chuta.onLoop.add(hasLooped, this);
+
+    text.text = 'Chuta';
+
+}
+
+function hasLooped(sound) {
+
+    loopCount++;
+
+    if (loopCount === 1)
+    {
+        sounds.shift();
+        drums.loopFull(0.6);
+        text.text = 'drums';
+        game.add.tween(speakers.scale).to( { x: 1.3, y: 1.1 }, 230, "Sine.easeInOut", true, 0, -1, true);
+    }
+    else if (loopCount === 2)
+    {
+        current = game.rnd.pick(sounds);
+        current.loopFull();
+        text.text = current.key;
+    }
+    else if (loopCount > 2)
+    {
+        current.stop();
+        current = game.rnd.pick(sounds);
+        current.loopFull();
+        text.text = current.key;
+    }
+
+    
+
+
 
 }
 
