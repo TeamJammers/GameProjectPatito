@@ -57,7 +57,6 @@ function create() {
     sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
 
-
     turret = game.add.sprite(0, 0,'turret');
     turret.visible = false;
 
@@ -86,7 +85,6 @@ function create() {
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
-
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -141,6 +139,7 @@ function hasLooped(sound) {
 function update() {
 
     game.physics.arcade.collide(sprite, layer);
+    game.physics.arcade.collide(bullets, layer);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
