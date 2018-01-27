@@ -80,7 +80,7 @@ function create() {
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    bullets.createMultiple(30, 'bullet', 0, false);
+    bullets.createMultiple(100, 'bullet', 0, false);
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
@@ -135,11 +135,19 @@ function hasLooped(sound) {
 }
 
 
+function collisionHandler(bullet) {
+    bullet.body.enable = false;
+    // bullet.kill();
+    // bullet.destroy();
+    bullets.remove(bullet);
+    // console.log(':O');
+}
+
 
 function update() {
 
     game.physics.arcade.collide(sprite, layer);
-    game.physics.arcade.collide(bullets, layer);
+    game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
