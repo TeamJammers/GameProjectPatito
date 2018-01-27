@@ -9,6 +9,7 @@ function preload() {
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+    game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
 }
 
 var map;
@@ -16,6 +17,7 @@ var layer;
 
 var cursors;
 var sprite;
+var tumba;
 
 var gameHeight = 40;
 var gameWidth  = 40;
@@ -60,21 +62,19 @@ function create() {
     turret = game.add.sprite(0, 0,'turret');
     turret.visible = false;
 
-
     turret.anchor.setTo(0.3, 0.5);
     //audio
     chuta = game.add.audio('chuta');
     sounds = [ chuta];
-
-
     // sprite.anchor.setTo(0.5, 0.5);
-
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
     sprite.animations.add('right', [5, 6, 7, 8], 10, true);
 
-    game.physics.enable(sprite);
+    tumba = game.add.sprite(200, 360, 'tumba');
+    tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
 
+    game.physics.enable(sprite);
     game.camera.follow(sprite);
 
     bullets = game.add.group();
@@ -127,14 +127,7 @@ function hasLooped(sound) {
         current.loopFull();
         text.text = current.key;
     }
-
-    
-
-
-
 }
-
-
 
 function update() {
 
@@ -143,6 +136,10 @@ function update() {
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
+
+    // Iniciando animacion de tumba
+    tumba.animations.play('tumbaRotate');
+
 
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
@@ -183,7 +180,6 @@ function update() {
 
     turret.x = sprite.x;
     turret.y = sprite.y;
-
     turret.rotation = game.physics.arcade.angleToPointer(turret);
 
     if (game.input.activePointer.isDown)
@@ -195,32 +191,23 @@ function update() {
 }
 
 function render() {
-    game.debug.text('Click to fill tiles', 32, 32, 'rgb(0,0,0)');
-    game.debug.text('Tile X: ' + layer.getTileX(sprite.x), 32, 48, 'rgb(0,0,0)');
-    game.debug.text('Tile Y: ' + layer.getTileY(sprite.y), 32, 64, 'rgb(0,0,0)');
+    // game.debug.text('Click to fill tiles', 32, 32, 'rgb(0,0,0)');
+    // game.debug.text('Tile X: ' + layer.getTileX(sprite.x), 32, 48, 'rgb(0,0,0)');
+    // game.debug.text('Tile Y: ' + layer.getTileY(sprite.y), 32, 64, 'rgb(0,0,0)');
 }
 
-
-
+// Funcion disparar condon
 function fire () {
-
-    if (game.time.now > nextFire && bullets.countDead() > 0)
-    {
+    if (game.time.now > nextFire && bullets.countDead() > 0) {
         nextFire = game.time.now + fireRate;
-
         var bullet = bullets.getFirstExists(false);
-
         bullet.reset(turret.x, turret.y);
-
         bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
     }
-
 }
 
 
 function bulletHitPlayer (tank, bullet) {
-
     bullet.kill();
-
 }
 
