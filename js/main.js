@@ -35,31 +35,32 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var timeString;
+var timeText;
+
 var fiesta;
 
 var chuta;
+
+
+//time of level
+ 
+var minutes;
+var seconds;
+
+
 function create() {
 
-    //title
-    var style = { font: "65px Arial", fill: "#52bace", align: "center" };
-    text = game.add.text(game.world.centerX, 100, "Bienvenidos al Carnaval 2018", style);
     text.anchor.set(0.5);
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
     map = game.add.tilemap('desert');
-
     map.addTilesetImage('Desert', 'tiles');
-
     map.setCollision([ 3, 4, 5, 6 ]);
-
     layer = map.createLayer('Ground');
-
     layer.resizeWorld();
 
     fiesta = game.add.sprite(0, 0, 'fiesta')
     fiesta.animations.add('on', [0, 1], 10, true);
-
     fiesta.animations.play('on');
 
     sprite = game.add.sprite(450, 300, 'car');
@@ -91,7 +92,19 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
 
-    cursors = game.input.keyboard.createCursorKeys();
+    cursors = game.input.keyboard.createCursorKeys();    
+    var styleCounter = { fill : "#FFFFFF" };
+    timeText = game.add.text(200, 200, timeString, styleCounter);
+
+    seconds = 0;
+    minutes = 0;
+
+    seconds = Number.parseInt(seconds);
+    minutes = Number.parseInt(minutes);
+
+    var timer = game.time.create();
+    timer.repeat(1 * Phaser.Timer.SECOND, 7200, updateTime, this);
+    timer.start();
     game.sound.setDecodedCallback(audioCarnaval, start, this);
 }
 
@@ -193,3 +206,22 @@ function bulletHitPlayer (tank, bullet) {
     bullet.kill();
 }
 
+
+function updateTime() {
+    seconds = Number.parseInt(seconds);
+    minutes = Number.parseInt(minutes);
+    if( seconds == 60){
+        seconds = 0;
+        minutes +=1; 
+    }
+    seconds += 1;
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+
+    timeString =  minutes + ":" + seconds;
+    timeText.text = timeString;
+}
