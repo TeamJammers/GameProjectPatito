@@ -5,5 +5,11 @@ Videojuego Serio para el Global Game Jam
 ## Uso
 
 - Clonar el repositorio
-- abrir el archivo index.html en tu navegador
+- Levantar un servidor http
+  Si tienes python 2 puedes crear uno con
+  ``` python -m SimpleHTTPServer ```
+  Si tienes python 3 puede crear uno con
+  ``` python -m http.server ```
+- Ingresar al localhost puerto 8000
+  ```localhost:8000```
 - A jugar!!!
