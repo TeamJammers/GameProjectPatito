@@ -10,6 +10,7 @@ function preload() {
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
+    game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 }
 
 var map;
@@ -35,6 +36,8 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var fiesta;
+
 var chuta;
 function create() {
 
@@ -55,6 +58,10 @@ function create() {
 
     layer.resizeWorld();
 
+    fiesta = game.add.sprite(0, 0, 'fiesta')
+    fiesta.animations.add('on', [0, 1], 10, true);
+
+    fiesta.animations.play('on');
 
     sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
