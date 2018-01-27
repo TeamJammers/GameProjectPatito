@@ -21,13 +21,14 @@ var layer;
 var cursors;
 var sprite;
 
+var gameHeight = 40;
+var gameWidth  = 40;
 
 var enemies;
 var enemyBullets;
 var enemiesTotal = 0;
 var enemiesAlive = 0;
 var explosions;
-
 
 var currentSpeed = 0;
 var cursors;
@@ -49,6 +50,8 @@ function create() {
     map = game.add.tilemap('desert');
 
     map.addTilesetImage('Desert', 'tiles');
+
+    // map.setCollision([ 3, 4, 5, 6 ]);
 
     layer = map.createLayer('Ground');
 
@@ -143,27 +146,44 @@ function update() {
 
     game.physics.arcade.collide(sprite, layer);
 
-    
-
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
 
+    var currentX = layer.getTileX(sprite.x);
+    var currentY = layer.getTileY(sprite.y);
+
     if (cursors.left.isDown) {
         sprite.animations.play('left');
-        sprite.body.velocity.x -= 200;
+        if(currentX == 0) {
+            sprite.body.velocity.x = 0;
+        } else {
+            sprite.body.velocity.x -= 200;
+        }
     }
     if (cursors.right.isDown) {
         sprite.animations.play('right');
-        sprite.body.velocity.x += 200;
+        if(currentX == gameWidth - 1) {
+            sprite.body.velocity.x = 0;
+        } else {
+            sprite.body.velocity.x += 200;
+        }
     }
 
     if (cursors.up.isDown) {
-        sprite.body.velocity.y -= 200;
         sprite.animations.play('turn');
+        if(currentY == 0) {
+            sprite.body.velocity.y = 0;
+        } else {
+            sprite.body.velocity.y -= 200;
+        }
     }
     if (cursors.down.isDown) {
         sprite.animations.play('turn');
-        sprite.body.velocity.y += 200;
+        if(currentY == gameHeight - 1) {
+            sprite.body.velocity.y = 0;
+        } else {
+            sprite.body.velocity.y += 200;
+        }
     }
 
     turret.x = sprite.x;
