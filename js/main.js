@@ -10,6 +10,10 @@ function preload() {
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     // game.load.image('car', 'assets/starstruck/dude.png');
+    //music
+    game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+
+
 }
 
 var map;
@@ -33,7 +37,13 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var chuta;
 function create() {
+
+    //title
+    var style = { font: "65px Arial", fill: "#52bace", align: "center" };
+    text = game.add.text(game.world.centerX, 100, "Bienvenidos al Carnaval 2018", style);
+    text.anchor.set(0.5);
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -44,6 +54,10 @@ function create() {
     layer = map.createLayer('Ground');
 
     layer.resizeWorld();
+
+    //audio
+    chuta = game.add.audio('chuta');
+    sounds = [ chuta];
 
     sprite = game.add.sprite(32, 32, 'car');
     // sprite.anchor.setTo(0.5, 0.5);
@@ -59,6 +73,45 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.input.onDown.add(fillTiles, this);
+    game.sound.setDecodedCallback(sounds, start, this);
+
+}
+
+function start() {
+
+    sounds.shift();
+
+    chuta.loopFull(0.6);
+    chuta.onLoop.add(hasLooped, this);
+
+    text.text = 'Chuta';
+
+}
+
+function hasLooped(sound) {
+
+    loopCount++;
+
+    if (loopCount === 1)
+    {
+        sounds.shift();
+        drums.loopFull(0.6);
+        text.text = 'drums';
+        game.add.tween(speakers.scale).to( { x: 1.3, y: 1.1 }, 230, "Sine.easeInOut", true, 0, -1, true);
+    }
+    else if (loopCount === 2)
+    {
+        current = game.rnd.pick(sounds);
+        current.loopFull();
+        text.text = current.key;
+    }
+    else if (loopCount > 2)
+    {
+        current.stop();
+        current = game.rnd.pick(sounds);
+        current.loopFull();
+        text.text = current.key;
+    }
 
 
     turret = game.add.sprite(0, 0, 'sprite', 'turret');
