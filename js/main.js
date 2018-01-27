@@ -51,7 +51,6 @@ var seconds;
 
 function create() {
 
-    text.anchor.set(0.5);
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('desert');
     map.addTilesetImage('Desert', 'tiles');
