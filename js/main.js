@@ -5,7 +5,7 @@ function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tmw_desert_spacing.png');
     game.load.image('car', 'assets/pepino.png');
-    game.load.image('bullet', 'assets/bullet.png');
+    game.load.image('bullet', 'assets/jam-condon.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
