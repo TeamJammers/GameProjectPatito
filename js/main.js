@@ -47,7 +47,7 @@ function create() {
 
     map.addTilesetImage('Desert', 'tiles');
 
-    // map.setCollision([ 3, 4, 5, 6 ]);
+    map.setCollision([ 3, 4, 5, 6 ]);
 
     layer = map.createLayer('Ground');
 
