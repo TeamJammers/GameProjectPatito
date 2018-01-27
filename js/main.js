@@ -10,6 +10,7 @@ function preload() {
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
+    game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 }
 
 var map;
@@ -37,6 +38,8 @@ var nextFire = 0;
 
 var timeString;
 var timeText;
+
+var fiesta;
 
 var chuta;
 
@@ -66,6 +69,10 @@ function create() {
 
     layer.resizeWorld();
 
+    fiesta = game.add.sprite(0, 0, 'fiesta')
+    fiesta.animations.add('on', [0, 1], 10, true);
+
+    fiesta.animations.play('on');
 
     sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
@@ -76,7 +83,6 @@ function create() {
     turret.anchor.setTo(0.3, 0.5);
     //audio
     chuta = game.add.audio('chuta');
-    sounds = [ chuta];
     // sprite.anchor.setTo(0.5, 0.5);
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -84,7 +90,7 @@ function create() {
 
     tumba = game.add.sprite(200, 360, 'tumba');
     tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-
+		game.physics.enable(tumba);
     game.physics.enable(sprite);
     game.camera.follow(sprite);
 
@@ -99,8 +105,6 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    game.sound.setDecodedCallback(sounds, start, this);
-
 
     var style = { fill : "#FFFFFF" };
     timeText = game.add.text(200, 200, timeString, style);
@@ -114,46 +118,13 @@ function create() {
     var timer = game.time.create();
     timer.repeat(1 * Phaser.Timer.SECOND, 7200, updateTime, this);
     timer.start();
-
+    game.sound.setDecodedCallback(chuta, start, this);
 }
 
 function start() {
-
-    sounds.shift();
-
-    chuta.loopFull(0.6);
-    chuta.onLoop.add(hasLooped, this);
-
-    text.text = 'Chuta';
-
+    chuta.play();
+    chuta.loopFull(0.5);
 }
-
-function hasLooped(sound) {
-
-    loopCount++;
-
-    if (loopCount === 1)
-    {
-        sounds.shift();
-        drums.loopFull(0.6);
-        text.text = 'drums';
-        game.add.tween(speakers.scale).to( { x: 1.3, y: 1.1 }, 230, "Sine.easeInOut", true, 0, -1, true);
-    }
-    else if (loopCount === 2)
-    {
-        current = game.rnd.pick(sounds);
-        current.loopFull();
-        text.text = current.key;
-    }
-    else if (loopCount > 2)
-    {
-        current.stop();
-        current = game.rnd.pick(sounds);
-        current.loopFull();
-        text.text = current.key;
-    }
-}
-
 
 function collisionHandler(bullet) {
     bullet.body.enable = false;
@@ -164,9 +135,17 @@ function collisionHandler(bullet) {
 }
 
 function update() {
-
+		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
+			game.physics.arcade.moveToObject(tumba, sprite, 220);
+		} else {
+			tumba.body.velocity.set(0);
+		}
+		game.physics.arcade.collide(sprite, tumba, () => {
+			sprite.kill();
+		});
     game.physics.arcade.collide(sprite, layer);
-    game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+		game.physics.arcade.collide(tumba, layer);
+		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
@@ -196,7 +175,7 @@ function update() {
     }
 
     if (cursors.up.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('up');
         if(currentY == 0) {
             sprite.body.velocity.y = 0;
         } else {
@@ -204,7 +183,7 @@ function update() {
         }
     }
     if (cursors.down.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('down');
         if(currentY == gameHeight - 1) {
             sprite.body.velocity.y = 0;
         } else {
@@ -250,8 +229,6 @@ function updateTime() {
     seconds = Number.parseInt(seconds);
     minutes = Number.parseInt(minutes);
     if( seconds == 60){
-
-        
         seconds = 0;
         minutes +=1; 
     }
