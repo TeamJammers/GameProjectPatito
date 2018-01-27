@@ -10,6 +10,7 @@ function preload() {
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
+    game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 }
 
 var map;
@@ -35,6 +36,8 @@ var bullets;
 var fireRate = 100;
 var nextFire = 0;
 
+var fiesta;
+
 var chuta;
 function create() {
 
@@ -55,6 +58,10 @@ function create() {
 
     layer.resizeWorld();
 
+    fiesta = game.add.sprite(0, 0, 'fiesta')
+    fiesta.animations.add('on', [0, 1], 10, true);
+
+    fiesta.animations.play('on');
 
     sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
@@ -72,7 +79,7 @@ function create() {
 
     tumba = game.add.sprite(200, 360, 'tumba');
     tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-
+		game.physics.enable(tumba);
     game.physics.enable(sprite);
     game.camera.follow(sprite);
 
@@ -103,9 +110,17 @@ function collisionHandler(bullet) {
 }
 
 function update() {
-
+		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
+			game.physics.arcade.moveToObject(tumba, sprite, 220);
+		} else {
+			tumba.body.velocity.set(0);
+		}
+		game.physics.arcade.collide(sprite, tumba, () => {
+			sprite.kill();
+		});
     game.physics.arcade.collide(sprite, layer);
-    game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+		game.physics.arcade.collide(tumba, layer);
+		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
@@ -135,7 +150,7 @@ function update() {
     }
 
     if (cursors.up.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('up');
         if(currentY == 0) {
             sprite.body.velocity.y = 0;
         } else {
@@ -143,7 +158,7 @@ function update() {
         }
     }
     if (cursors.down.isDown) {
-        sprite.animations.play('turn');
+        sprite.animations.play('down');
         if(currentY == gameHeight - 1) {
             sprite.body.velocity.y = 0;
         } else {
