@@ -4,7 +4,6 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tmw_desert_spacing.png');
-    game.load.image('car', 'assets/pepino.png');
     game.load.image('bullet', 'assets/jam-condon.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
@@ -70,8 +69,8 @@ function create() {
     turret.visible = false;
 
     turret.anchor.setTo(0.3, 0.5);
-    //audio
-    chuta = game.add.audio('chuta');
+    // audio
+    audioCarnaval = game.add.audio('chuta');
     // sprite.anchor.setTo(0.5, 0.5);
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -79,7 +78,7 @@ function create() {
 
     tumba = game.add.sprite(200, 360, 'tumba');
     tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-		game.physics.enable(tumba);
+	game.physics.enable(tumba);
     game.physics.enable(sprite);
     game.camera.follow(sprite);
 
@@ -93,12 +92,12 @@ function create() {
     bullets.setAll('checkWorldBounds', true);
 
     cursors = game.input.keyboard.createCursorKeys();
-    game.sound.setDecodedCallback(chuta, start, this);
+    game.sound.setDecodedCallback(audioCarnaval, start, this);
 }
 
 function start() {
-    chuta.play();
-    chuta.loopFull(0.5);
+    audioCarnaval.play();
+    audioCarnaval.loopFull(0.5);
 }
 
 function collisionHandler(bullet) {
@@ -119,15 +118,14 @@ function update() {
 			sprite.kill();
 		});
     game.physics.arcade.collide(sprite, layer);
-		game.physics.arcade.collide(tumba, layer);
-		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+	game.physics.arcade.collide(tumba, layer);
+	game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
 
     // Iniciando animacion de tumba
     tumba.animations.play('tumbaRotate');
-
 
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
@@ -148,7 +146,6 @@ function update() {
             sprite.body.velocity.x += 200;
         }
     }
-
     if (cursors.up.isDown) {
         sprite.animations.play('up');
         if(currentY == 0) {
@@ -170,8 +167,7 @@ function update() {
     turret.y = sprite.y;
     turret.rotation = game.physics.arcade.angleToPointer(turret);
 
-    if (game.input.activePointer.isDown)
-    {
+    if (game.input.activePointer.isDown) {
         //  Boom!
         fire();
     }
@@ -179,9 +175,7 @@ function update() {
 }
 
 function render() {
-    // game.debug.text('Click to fill tiles', 32, 32, 'rgb(0,0,0)');
-    // game.debug.text('Tile X: ' + layer.getTileX(sprite.x), 32, 48, 'rgb(0,0,0)');
-    // game.debug.text('Tile Y: ' + layer.getTileY(sprite.y), 32, 64, 'rgb(0,0,0)');
+    
 }
 
 // Funcion disparar condon
