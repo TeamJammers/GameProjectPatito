@@ -65,7 +65,6 @@ function create() {
     turret.anchor.setTo(0.3, 0.5);
     //audio
     chuta = game.add.audio('chuta');
-    sounds = [ chuta];
     // sprite.anchor.setTo(0.5, 0.5);
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -87,48 +86,13 @@ function create() {
     bullets.setAll('checkWorldBounds', true);
 
     cursors = game.input.keyboard.createCursorKeys();
-
-    game.sound.setDecodedCallback(sounds, start, this);
-
+    game.sound.setDecodedCallback(chuta, start, this);
 }
 
 function start() {
-
-    sounds.shift();
-
-    chuta.loopFull(0.6);
-    chuta.onLoop.add(hasLooped, this);
-
-    text.text = 'Chuta';
-
+    chuta.play();
+    chuta.loopFull(0.5);
 }
-
-function hasLooped(sound) {
-
-    loopCount++;
-
-    if (loopCount === 1)
-    {
-        sounds.shift();
-        drums.loopFull(0.6);
-        text.text = 'drums';
-        game.add.tween(speakers.scale).to( { x: 1.3, y: 1.1 }, 230, "Sine.easeInOut", true, 0, -1, true);
-    }
-    else if (loopCount === 2)
-    {
-        current = game.rnd.pick(sounds);
-        current.loopFull();
-        text.text = current.key;
-    }
-    else if (loopCount > 2)
-    {
-        current.stop();
-        current = game.rnd.pick(sounds);
-        current.loopFull();
-        text.text = current.key;
-    }
-}
-
 
 function collisionHandler(bullet) {
     bullet.body.enable = false;
