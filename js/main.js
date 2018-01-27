@@ -1,27 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TeamJammers</title>
-</head>
-<body>
-<<<<<<< HEAD
-  
-  <script src="./phaser.min.js"></script>
-  <script>
-    var game = new Phaser.Game(900, 800, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-
-    game.load.tilemap(  'level1', 'assets/games/starstruck/level1.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles-1', 'assets/games/starstruck/tiles-1.png');
-    game.load.spritesheet('dude', 'assets/games/starstruck/dude.png', 32, 48);
-    game.load.spritesheet('droid', 'assets/games/starstruck/droid.png', 32, 32);
-    game.load.image('starSmall', 'assets/games/starstruck/star.png');
-    game.load.image('starBig', 'assets/games/starstruck/star2.png');
-    game.load.image('background', 'assets/games/starstruck/background2.png');
+    game.load.tilemap('level1', 'assets/starstruck/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles-1', 'assets/starstruck/tiles-1.png');
+    game.load.spritesheet('dude', 'assets/starstruck/dude.png', 32, 48);
+    game.load.spritesheet('droid', 'assets/starstruck/droid.png', 32, 32);
+    game.load.image('starSmall', 'assets/starstruck/star.png');
+    game.load.image('starBig', 'assets/starstruck/star2.png');
+    game.load.image('background', 'assets/starstruck/background2.png');
 
 }
 
@@ -30,7 +17,7 @@ var tileset;
 var layer;
 var player;
 var facing = 'left';
-var jumpTimer = -3000;
+var jumpTimer = 0;
 var cursors;
 var jumpButton;
 var bg;
@@ -62,7 +49,7 @@ function create() {
     player = game.add.sprite(32, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
-    player.body.bounce.y = 0.4; //nivel de revote
+    player.body.bounce.y = 0.2;
     player.body.collideWorldBounds = true;
     player.body.setSize(20, 32, 5, 16);
 
@@ -141,11 +128,3 @@ function render () {
     // game.debug.bodyInfo(player, 16, 24);
 
 }
-  </script>
-=======
-
-    <script src="./js/phaser.min.js"></script>
-    <script src="./js/main.js"></script>
->>>>>>> abb1a357332f2485c6325f3244a39964ef6ad2aa
-</body>
-</html>
