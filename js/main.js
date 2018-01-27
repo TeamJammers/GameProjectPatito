@@ -6,7 +6,6 @@ function preload() {
     game.load.image('tiles', 'assets/tmw_desert_spacing.png');
     game.load.image('car', 'assets/pepino.png');
     game.load.image('bullet', 'assets/bullet.png');
-    game.load.image('bullet', 'assets/bullet.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     // game.load.image('car', 'assets/starstruck/dude.png');
@@ -45,8 +44,8 @@ function create() {
 
     layer.resizeWorld();
 
-    sprite = game.add.sprite(32, 32, 'car');
-    // sprite.anchor.setTo(0.5, 0.5);
+    sprite = game.add.sprite(450, 300, 'car');
+    sprite.anchor.setTo(0.5, 0.5);
 
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -58,12 +57,12 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    game.input.onDown.add(fillTiles, this);
+
+    turret = game.add.sprite(0, 0,'turret');
+    turret.visible = false;
 
 
-    turret = game.add.sprite(0, 0, 'sprite', 'turret');
     turret.anchor.setTo(0.3, 0.5);
-
 
 
     bullets = game.add.group();
@@ -79,20 +78,17 @@ function create() {
 
 }
 
-function fillTiles() {
 
-    map.fill(31, layer.getTileX(sprite.x), layer.getTileY(sprite.y), 8, 8);
-
-}
 
 function update() {
 
     game.physics.arcade.collide(sprite, layer);
 
-    game.physics.arcade.overlap(enemyBullets, sprite, bulletHitPlayer, null, this);
+    
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
+
     if (cursors.left.isDown) {
         sprite.animations.play('left');
         sprite.body.velocity.x -= 200;
@@ -110,8 +106,6 @@ function update() {
         sprite.animations.play('turn');
         sprite.body.velocity.y += 200;
     }
-
-
 
     turret.x = sprite.x;
     turret.y = sprite.y;
