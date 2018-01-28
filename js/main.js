@@ -45,8 +45,8 @@ var fireRate = 100;
 var nextFire = 0;
 
 var timeString;
-var condonString = 'asdfasdfasdf';
-var cuetilloString  = 'asdfasdfasdf';
+var condonString;
+var cuetilloString;
 var timeText;
 
 
