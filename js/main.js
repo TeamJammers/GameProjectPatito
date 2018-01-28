@@ -266,7 +266,9 @@ function columnWasHouse(column) {
 }
 function condonToFiestas(fiesta, condon) {
 	score += fiesta['score'];
-	currentParties--;
+	if (currentParties > 0) {
+		currentParties--;
+	}
 	fiesta.kill();
 }
 function condonToTumba(tumba, condon) {
@@ -296,7 +298,9 @@ function update() {
 			fiestas.children.forEach(fiesta => {
 				fiesta['score'] -= 5;
 				if (!fiesta['score']) {
-					currentParties--;
+					if (currentParties > 0) {
+						currentParties--;
+					}
 					fiestas.remove(fiesta);
 				}
 			});
@@ -327,11 +331,11 @@ function update() {
 			game.physics.arcade.enable(tumba2);
 			tumbas.addChild(tumba2);
 		}
+		game.physics.arcade.overlap(tumbas, cholas, bulletToTumba, null, this);
 		game.physics.arcade.collide(tumbas, tumbaBullets, bulletToTumba, null, this);
 		game.physics.arcade.collide(fiestas, bullets, condonToFiestas, null, this);
-        game.physics.arcade.collide(tumbas, bullets, condonToTumba, null, this);
+    game.physics.arcade.collide(tumbas, bullets, condonToTumba, null, this);
 		tumbas.children.forEach(tumba => {
-			
 			if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {	
 				game.physics.arcade.moveToObject(tumba, sprite, 220);
 			} else {
@@ -435,7 +439,10 @@ function render() {
 // Funcion disparar condon
 function fire () {
     if (game.time.now > nextFire && bullets.countDead() > 0 && condonCount > 0) {
-        nextFire = game.time.now + fireRate;
+				if (condonCount > 0) {
+					condonCount--;
+				}
+				nextFire = game.time.now + fireRate;
         var bullet = bullets.getFirstExists(false);
         bullet.reset(turret.x, turret.y);
         bullet.rotation = game.physics.arcade.moveToPointer(bullet, 1000, game.input.activePointer, 500);
@@ -455,10 +462,8 @@ function superPoder() {
             if(i < 4) {
                 var chola = game.add.sprite(pepinoX + dx[i] * dst, pepinoY + dy[i] * dst, 'chola');
                 game.physics.arcade.enable(chola);
-                game.physics.arcade.collide(chola, tumbas, bulletToTumba, null, this);
                 chola.animations.add('dancing', [0, 1], 5, true);
-                chola.animations.play('dancing');
-                
+                chola.animations.play('dancing');                
                 chola['tiempo'] = 1;
                 cholas.addChild(chola);
             } else {
@@ -474,7 +479,9 @@ function superPoder() {
 
 function fireTumba(){
   if (game.time.now > nextFire && tumbaBullets.countDead() > 0 && cohetilloCount > 0) { 
-      cohetilloCount--;
+			if (cohetilloCount > 0) {
+				cohetilloCount--;
+			}
       nextFire = game.time.now + fireRate;
       var tumbaBullet = tumbaBullets.getFirstExists(false);
       tumbaBullet.reset(tumbaTurret.x, tumbaTurret.y);
