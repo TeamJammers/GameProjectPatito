@@ -155,19 +155,31 @@ function collisionHandler(bullet) {
     bullets.remove(bullet);
     // console.log(':O');
 }
+function collisionHandlerTumbaBullet(bullet, type) {
+	bullet.body.enable = false;
+	// bullet.kill();
+	// bullet.destroy();
+	tumbaBullets.remove(bullet);
+	// console.log(':O');
+}
 var ok = 0;
 var generateAfter = 30;
 function columnWasHouse(column) {
 	for (let i = 0; i < 4; i++) {
 		if (!((column - i )% 8)) {
 			return column;
-		}
+		collide}
 	}
 	return -1;
 }
-function collidePepino(pepino, tumba) {
-	console.log(pepino, tumba);
-	pepino.kill();
+function condonToFiestas(fiesta, condon) {
+	fiesta.kill();
+}
+function condonToTumba(tumba, condon) {
+	condon.kill();
+}
+function bulletToTumba(tumba, bullet) {
+	tumba.kill();
 }
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
@@ -184,6 +196,7 @@ function update() {
 			let fiesta = game.add.sprite(row * 32, column * 32, 'fiesta');
 			fiesta.animations.add('on', [0, 0], 10, true);
 			fiesta.animations.play('on');
+			game.physics.arcade.enable(fiesta);
 			fiestas.addChild(fiesta);
 			let tumba = game.add.sprite((row - 2) * 32, column * 32, 'tumba');
 			tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
@@ -194,8 +207,11 @@ function update() {
 			game.physics.arcade.enable(tumba2);
 			tumbas.addChild(tumba2);
 		}
-		game.physics.arcade.overlap(tumbas, sprite, collidePepino, null, this);
+		game.physics.arcade.collide(tumbas, tumbaBullets, bulletToTumba, null, this);
+		game.physics.arcade.collide(fiestas, bullets, condonToFiestas, null, this);
+		game.physics.arcade.collide(tumbas, bullets, condonToTumba, null, this);
 		tumbas.children.forEach(tumba => {
+			
 			if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {	
 				game.physics.arcade.moveToObject(tumba, sprite, 220);
 			} else {
@@ -210,6 +226,7 @@ function update() {
 		});
     game.physics.arcade.collide(sprite, layer);
 		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+		game.physics.arcade.collide(tumbaBullets, layer, collisionHandlerTumbaBullet, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
