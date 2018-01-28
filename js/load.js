@@ -1,6 +1,8 @@
 var load = {
 	create: function(){
-			game.state.start('level1');
+
+			game.state.start('splash');
+			//game.state.start('level1');
 	}
 }
 

@@ -49,6 +49,8 @@ preload: function() {
  timeString: null,
  condonString : null,
  cuetilloString  : null,
+ partiesString: null,
+ scoreString: null,
  timeText: null,
 
 
@@ -76,6 +78,7 @@ preload: function() {
  condonCount : 5,
  cohetilloCount : 5, // #spanglish :V
 create: function() {
+  console.log("lvl1");
     document.addEventListener('contextmenu', event => event.preventDefault());
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('desert');
@@ -215,9 +218,14 @@ create: function() {
     cuetillosText = game.add.text(200, 10, this.cuetilloString, style);
     condonesText = game.add.text(400, 10, this.condonString, style);
 
+    partiesText = game.add.text(500, 10, this.partiesString, style);
+    scoreText = game.add.text(650, 10, this.scoreString, style);
+
     spriteText.addChild(this.timeText);
     spriteText.addChild(cuetillosText);
     spriteText.addChild(condonesText);
+    spriteText.addChild(partiesText);
+ 	spriteText.addChild(scoreText);
    
     this.seconds = 0;
     this.minutes = 0;
@@ -513,6 +521,8 @@ updateTime : function() {
     this.timeText.text = timeString;
     condonesText.text = "Condones: " + this.condonCount;
     cuetillosText.text = "Cohetillos: " + this.cohetilloCount;
+    partiesText.text = "Fiestas: " + this.currentParties;
+  	scoreText.text = "Score: " + this.score;
 }
 
 
