@@ -17,7 +17,7 @@ var layer;
 
 var cursors;
 var sprite;
-var tumba;
+var tumbas;
 
 var gameHeight = 40;
 var gameWidth  = 40;
@@ -74,10 +74,9 @@ function create() {
     sprite.animations.add('turn', [4], 20, true);
     sprite.animations.add('right', [5, 6, 7, 8], 10, true);
 
-    tumba = game.add.sprite(200, 360, 'tumba');
-    tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-	game.physics.enable(tumba);
-    game.physics.enable(sprite);
+		tumbas = game.add.group();
+		tumbas.enableBody = true;
+		game.physics.arcade.enable(sprite);
     game.camera.follow(sprite);
 
     bullets = game.add.group();
@@ -138,6 +137,10 @@ function columnWasHouse(column) {
 	}
 	return -1;
 }
+function collidePepino(pepino, tumba) {
+	console.log(pepino, tumba);
+	pepino.kill();
+}
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
 		if (prevTime === time) { 
@@ -154,24 +157,36 @@ function update() {
 			fiesta.animations.add('on', [0, 0], 10, true);
 			fiesta.animations.play('on');
 			fiestas.addChild(fiesta);
+			let tumba = game.add.sprite((row - 2) * 32, column * 32, 'tumba');
+			tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
+			game.physics.arcade.enable(tumba);
+			tumbas.addChild(tumba);
+			let tumba2 = game.add.sprite((row + 2) * 32, column * 32, 'tumba');
+			tumba2.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
+			game.physics.arcade.enable(tumba2);
+			tumbas.addChild(tumba2);
 		}
-		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
-			game.physics.arcade.moveToObject(tumba, sprite, 220);
-		} else {
-			tumba.body.velocity.set(0);
-		}
-		game.physics.arcade.collide(sprite, tumba, () => {
-			sprite.kill();
+		game.physics.arcade.overlap(tumbas, sprite, collidePepino, null, this);
+		tumbas.children.forEach(tumba => {
+			if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {	
+				game.physics.arcade.moveToObject(tumba, sprite, 220);
+			} else {
+				tumba.body.velocity.set(0);
+			}
+			game.physics.arcade.collide(sprite, tumba, () => {
+				sprite.kill();
+			});
+			game.physics.arcade.collide(tumba, layer);
+			tumba.animations.play('tumbaRotate');
+			
 		});
     game.physics.arcade.collide(sprite, layer);
-		game.physics.arcade.collide(tumba, layer);
 		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
 
     // Iniciando animacion de tumba
-    tumba.animations.play('tumbaRotate');
 
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
