@@ -7,7 +7,7 @@ preload: function() {
 
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
-    game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+    game.load.audio('chuta', 'assets/audio/chutaalegre.m4a');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
 	game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		
@@ -215,8 +215,8 @@ create: function() {
 
     var style = { fill : "#FFFFFF" };
     this.timeText = game.add.text(10, 10, this.timeString, style);
-    cuetillosText = game.add.text(200, 10, this.cuetilloString, style);
-    condonesText = game.add.text(400, 10, this.condonString, style);
+    cuetillosText = game.add.text(100, 10, this.cuetilloString, style);
+    condonesText = game.add.text(300, 10, this.condonString, style);
 
     partiesText = game.add.text(500, 10, this.partiesString, style);
     scoreText = game.add.text(650, 10, this.scoreString, style);
@@ -241,7 +241,7 @@ create: function() {
 
  start: function() {
     audioCarnaval.play();
-    audioCarnaval.loopFull(0.5);
+    audioCarnaval.loopFull(1);
 },
 
 collisionHandler: function(bullet) {
@@ -259,7 +259,7 @@ collisionHandlerTumbaBullet: function(bullet, type) {
 	// console.log(':O');
 },
 ok : 0,
-generateAfter : 30,
+generateAfter : 8,
 columnWasHouse: function(column) {
 	for (let i = 0; i < 4; i++) {
 		if (!((column - i )% 8)) {
@@ -280,35 +280,34 @@ bulletToTumba: function(tumba, bullet) {
 	tumba.kill();
 	bullet.kill();
 },
-lastime : 0,
+lastTime : 0,
 update: function() {
 		const time = parseInt(this.minutes) * 60 + parseInt(this.seconds);
-
-		if (this.time > this.lastTime) {
- 			this.lastTime = this.time;
-
-
- 			lastTime = time;
-             this.cholas.children.forEach(function(chola) {
-                 chola['tiempo']--;
-                 if(chola['tiempo'] == 0) {
-                     cholas.remove(chola);
-                 }
-             });
-             this.chutas.children.forEach(function(chuta) {
-                 chuta['tiempo']--;
-                 if(chuta['tiempo'] == 0) {
-                     chutas.remove(chuta);
-                 }
-             });
- 			this.fiestas.children.forEach(fiesta => {
- 				fiesta['score'] -= 5;
- 				if (!fiesta['score']) {
- 					this.currentParties--;
- 					this.fiestas.remove(fiesta);
- 				}
- 			});
- 		}
+        console.log(time, this.lasTime)
+		if (time > this.lastTime) {
+            this.lastTime = time;
+            this.cholas.children.forEach((chola)=> {
+                chola['tiempo']--;
+                if(chola['tiempo'] == 0) {
+                    this.cholas.remove(chola);
+                }
+            });
+            this.chutas.children.forEach((chuta)=> {
+                chuta['tiempo']--;
+                if(chuta['tiempo'] == 0) {
+                    this.chutas.remove(chuta);
+                }
+            });
+			this.fiestas.children.forEach(fiesta => {
+				fiesta['score'] -= 5;
+				if (!fiesta['score']) {
+					if (currentParties > 0) {
+						currentParties--;
+					}
+					this.fiestas.remove(fiesta);
+				}
+			});
+		}
 		if (this.prevTime === time) { 
 			this.prevTime = time + this.generateAfter;
 			let row = parseInt(Math.random() * 40);
@@ -353,9 +352,12 @@ update: function() {
                 prevTime = 0;
 				cohetilloCount = 5;
 				condonCount = 5;
-				score = 0;
+                score = 0;
+                
 				currentParties = 0;
-			});
+                
+                this.game.state.restart();
+            });
 			game.physics.arcade.collide(tumba, layer);
 			tumba.animations.play('tumbaRotate');
 			
