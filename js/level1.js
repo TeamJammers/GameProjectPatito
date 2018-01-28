@@ -476,26 +476,26 @@ superPoder: function(){
      var dy = [ 1, 1 , 1, 0, -1, -1, -1, 0];
      var dst = 30;
      var objs = [];
-     if (game.time.now > nextFire) { 
-         nextFire = game.time.now + fireRate;
+     if (game.time.now > this.nextFire) { 
+         this.nextFire = game.time.now + this.fireRate;
          var pepinoX = sprite.x;
          var pepinoY = sprite.y;
          for(var i = 0 ; i < 8 ; i++) {
              if(i < 4) {
                  var chola = game.add.sprite(pepinoX + dx[i] * dst, pepinoY + dy[i] * dst, 'chola');
                  game.physics.arcade.enable(chola);
-                 game.physics.arcade.collide(chola, tumbas, bulletToTumba, null, this);
+                 game.physics.arcade.collide(chola, this.tumbas, this.bulletToTumba, null, this);
                  chola.animations.add('dancing', [0, 1], 5, true);
                  chola.animations.play('dancing');
                  
                 chola['tiempo'] = 1;
-                 cholas.addChild(chola);
+                 this.cholas.addChild(chola);
              } else {
                  var chuta = game.add.sprite(pepinoX + dx[i] * dst, pepinoY + dy[i] * dst, 'chuta-paceno');
                  chuta.animations.add('dancing', [0, 1], 5, true);
                  chuta.animations.play('dancing');
                  chuta['tiempo'] = 1;
-                 chutas.addChild(chuta);
+                 this.chutas.addChild(chuta);
              }
          }
      }
