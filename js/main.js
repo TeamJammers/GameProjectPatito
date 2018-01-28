@@ -45,6 +45,8 @@ var fireRate = 100;
 var nextFire = 0;
 
 var timeString;
+var condonString = 'asdfasdfasdf';
+var cuetilloString  = 'asdfasdfasdf';
 var timeText;
 
 
@@ -184,8 +186,12 @@ function create() {
 
     var style = { fill : "#FFFFFF" };
     timeText = game.add.text(10, 10, timeString, style);
+    cuetillosText = game.add.text(200, 10, cuetilloString, style);
+    condonesText = game.add.text(400, 10, condonString, style);
 
     spriteText.addChild(timeText);
+    spriteText.addChild(cuetillosText);
+    spriteText.addChild(condonesText);
    
     seconds = 0;
     minutes = 0;
@@ -369,6 +375,7 @@ function render() {
 // Funcion disparar condon
 function fire () {
     if (game.time.now > nextFire && bullets.countDead() > 0) {
+        condonCount--;
         nextFire = game.time.now + fireRate;
         var bullet = bullets.getFirstExists(false);
         bullet.reset(turret.x, turret.y);
@@ -379,6 +386,7 @@ function fire () {
 function fireTumba(){
 
   if (game.time.now > nextFire && tumbaBullets.countDead() > 0) {
+      cohetilloCount--;
      nextFire = game.time.now + fireRate;
       var tumbaBullet = tumbaBullets.getFirstExists(false);
       tumbaBullet.reset(tumbaTurret.x, tumbaTurret.y);
@@ -409,4 +417,6 @@ function updateTime() {
 
     timeString =  minutes + ":" + seconds;
     timeText.text = timeString;
+    condonesText.text = "Condones: " + condonCount;
+    cuetillosText.text = "Cohetillos: " + cohetilloCount;
 }
