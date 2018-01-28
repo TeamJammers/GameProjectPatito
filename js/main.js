@@ -5,6 +5,8 @@ function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tmw_desert_spacing.png');
     game.load.image('bullet', 'assets/jam-condon.png');
+    game.load.image('tumbaBullet', 'assets/bullet.png');
+
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
@@ -32,11 +34,13 @@ var currentSpeed = 0;
 var cursors;
 
 var bullets;
+var tumbaBullets;
 var fireRate = 100;
 var nextFire = 0;
 
 var timeString;
 var timeText;
+
 
 var fiestas;
 
@@ -50,6 +54,8 @@ var seconds;
 
 var prevTime = 0;
 function create() {
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('desert');
     map.addTilesetImage('Desert', 'tiles');
@@ -65,8 +71,14 @@ function create() {
 
     turret = game.add.sprite(0, 0,'turret');
     turret.visible = false;
-
     turret.anchor.setTo(0.3, 0.5);
+
+    tumbaTurret = game.add.sprite(0, 0,'tumbaturret');
+    tumbaTurret.visible = false;
+    tumbaTurret.anchor.setTo(0.3, 0.5);
+    // audio
+
+
     // audio
     audioCarnaval = game.add.audio('chuta');
     // sprite.anchor.setTo(0.5, 0.5);
@@ -88,6 +100,16 @@ function create() {
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
+
+
+    tumbaBullets = game.add.group();
+    tumbaBullets.enableBody = true;
+    tumbaBullets.physicsBodyType = Phaser.Physics.ARCADE;
+    tumbaBullets.createMultiple(100, 'tumbaBullet', 0, false);
+    tumbaBullets.setAll('anchor.x', 0.5);
+    tumbaBullets.setAll('anchor.y', 0.5);
+    tumbaBullets.setAll('outOfBoundsKill', true);
+    tumbaBullets.setAll('checkWorldBounds', true);
 
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -213,10 +235,16 @@ function update() {
     turret.x = sprite.x;
     turret.y = sprite.y;
     turret.rotation = game.physics.arcade.angleToPointer(turret);
+    tumbaTurret.x = sprite.x;
+    tumbaTurret.y = sprite.y;
+    turret.rotation = game.physics.arcade.angleToPointer(tumbaTurret);
 
-    if (game.input.activePointer.isDown) {
+    if (game.input.activePointer.leftButton.isDown) {
         //  Boom!
         fire();
+    }
+    if(game.input.activePointer.rightButton.isDown){
+        fireTumba();
     }
 
 }
@@ -235,9 +263,18 @@ function fire () {
     }
 }
 
+function fireTumba(){
 
-function bulletHitPlayer (tank, bullet) {
-    bullet.kill();
+  if (game.time.now > nextFire && tumbaBullets.countDead() > 0) {
+     nextFire = game.time.now + fireRate;
+      var tumbaBullet = tumbaBullets.getFirstExists(false);
+      tumbaBullet.reset(tumbaTurret.x, tumbaTurret.y);
+      tumbaBullet.rotation = game.physics.arcade.moveToPointer(tumbaBullet, 1000, game.input.activePointer, 500);
+    }
+}
+
+function bulletHitTumba (srpite, bullet) {
+    tumbaBullet.kill();
 }
 
 
@@ -245,11 +282,10 @@ function updateTime() {
     seconds = Number.parseInt(seconds);
     minutes = Number.parseInt(minutes);
     if( seconds == 60){
-
-        
         seconds = 0;
         minutes +=1; 
     }
+
     seconds += 1;
     if (minutes < 10) {
         minutes = "0" + minutes;
