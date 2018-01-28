@@ -38,7 +38,7 @@ var nextFire = 0;
 var timeString;
 var timeText;
 
-var fiesta;
+var fiestas;
 
 var chuta;
 
@@ -48,9 +48,8 @@ var chuta;
 var minutes;
 var seconds;
 
-
+var prevTime = 0;
 function create() {
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('desert');
     map.addTilesetImage('Desert', 'tiles');
@@ -58,11 +57,10 @@ function create() {
     layer = map.createLayer('Ground');
     layer.resizeWorld();
 
-    fiesta = game.add.sprite(0, 0, 'fiesta')
-    fiesta.animations.add('on', [0, 1], 10, true);
-    fiesta.animations.play('on');
-
-    sprite = game.add.sprite(450, 300, 'car');
+		fiestas = game.add.group();
+		fiestas.enableBody = true;
+	
+		sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
 
     turret = game.add.sprite(0, 0,'turret');
@@ -119,8 +117,33 @@ function collisionHandler(bullet) {
     bullets.remove(bullet);
     // console.log(':O');
 }
-
+var ok = 0;
+var generateAfter = 30;
+function columnWasHouse(column) {
+	for (let i = 0; i < 4; i++) {
+		if (!((column - i )% 8)) {
+			return column;
+		}
+	}
+	return -1;
+}
 function update() {
+		const time = parseInt(minutes) * 60 + parseInt(seconds);
+		if (prevTime === time) { 
+			prevTime = time + generateAfter;
+			let row = parseInt(Math.random() * 40);
+			while(row % 4) {
+				row--;
+			}
+			let column = parseInt(Math.random() * 40);
+			while(columnWasHouse(column) === -1) {
+				column--;
+			}
+			let fiesta = game.add.sprite(row * 32, column * 32, 'fiesta');
+			fiesta.animations.add('on', [0, 0], 10, true);
+			fiesta.animations.play('on');
+			fiestas.addChild(fiesta);
+		}
 		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
 			game.physics.arcade.moveToObject(tumba, sprite, 220);
 		} else {
@@ -130,8 +153,8 @@ function update() {
 			sprite.kill();
 		});
     game.physics.arcade.collide(sprite, layer);
-	game.physics.arcade.collide(tumba, layer);
-	game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
+		game.physics.arcade.collide(tumba, layer);
+		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
@@ -142,7 +165,7 @@ function update() {
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
 
-    if (cursors.left.isDown) {
+    if (cursors.left.isDown || cursors.A.isDown) {
         sprite.animations.play('left');
         if(currentX == 0) {
             sprite.body.velocity.x = 0;
