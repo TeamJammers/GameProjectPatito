@@ -20,7 +20,7 @@ function preload() {
 
 var map;
 var layer;
-
+var score = 0;
 var cursors;
 var sprite;
 var tumbas;
@@ -235,6 +235,7 @@ function columnWasHouse(column) {
 	return -1;
 }
 function condonToFiestas(fiesta, condon) {
+	score += fiesta['score'];
 	fiesta.kill();
 }
 function condonToTumba(tumba, condon) {
@@ -242,9 +243,20 @@ function condonToTumba(tumba, condon) {
 }
 function bulletToTumba(tumba, bullet) {
 	tumba.kill();
+	bullet.kill();
 }
+var lastTime = 0;
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
+		if (time > lastTime) {
+			lastTime = time;
+			fiestas.children.forEach(fiesta => {
+				fiesta['score'] -= 5;
+				if (!fiesta['score']) {
+					fiestas.remove(fiesta);
+				}
+			});
+		}
 		if (prevTime === time) { 
 			prevTime = time + generateAfter;
 			let row = parseInt(Math.random() * 40);
@@ -258,6 +270,7 @@ function update() {
 			let fiesta = game.add.sprite(row * 32, column * 32, 'fiesta');
 			fiesta.animations.add('on', [0, 0], 10, true);
 			fiesta.animations.play('on');
+			fiesta['score'] = 100;
 			game.physics.arcade.enable(fiesta);
 			fiestas.addChild(fiesta);
 			let tumba = game.add.sprite((row - 2) * 32, column * 32, 'tumba');
