@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(1280, 800, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
@@ -343,6 +343,11 @@ function update() {
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
 				sprite.kill();
+
+				cohetilloCount = 5;
+				condonCount = 5;
+				score = 0;
+				currentParties = 0;
                  this.game.state.restart();
 			});
 			game.physics.arcade.collide(tumba, layer);
