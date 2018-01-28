@@ -374,8 +374,7 @@ function render() {
 
 // Funcion disparar condon
 function fire () {
-    if (game.time.now > nextFire && bullets.countDead() > 0) {
-        condonCount--;
+    if (game.time.now > nextFire && bullets.countDead() > 0 && condonCount > 0) {
         nextFire = game.time.now + fireRate;
         var bullet = bullets.getFirstExists(false);
         bullet.reset(turret.x, turret.y);
@@ -385,7 +384,7 @@ function fire () {
 
 function fireTumba(){
 
-  if (game.time.now > nextFire && tumbaBullets.countDead() > 0) {
+  if (game.time.now > nextFire && tumbaBullets.countDead() > 0 && cohetilloCount > 0) { 
       cohetilloCount--;
      nextFire = game.time.now + fireRate;
       var tumbaBullet = tumbaBullets.getFirstExists(false);
