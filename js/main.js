@@ -65,6 +65,7 @@ var seconds;
 
 var prevTime = 0;
 
+var currentParties = 0;
 var drugstoreSet = new Set();
 var storeSet = new Set();
 var condonCount = 5;
@@ -236,6 +237,7 @@ function columnWasHouse(column) {
 }
 function condonToFiestas(fiesta, condon) {
 	score += fiesta['score'];
+	currentParties--;
 	fiesta.kill();
 }
 function condonToTumba(tumba, condon) {
@@ -253,6 +255,7 @@ function update() {
 			fiestas.children.forEach(fiesta => {
 				fiesta['score'] -= 5;
 				if (!fiesta['score']) {
+					currentParties--;
 					fiestas.remove(fiesta);
 				}
 			});
@@ -271,6 +274,7 @@ function update() {
 			fiesta.animations.add('on', [0, 0], 10, true);
 			fiesta.animations.play('on');
 			fiesta['score'] = 100;
+			currentParties++;
 			game.physics.arcade.enable(fiesta);
 			fiestas.addChild(fiesta);
 			let tumba = game.add.sprite((row - 2) * 32, column * 32, 'tumba');
