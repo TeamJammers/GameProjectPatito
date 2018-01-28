@@ -49,6 +49,8 @@ var nextFire = 0;
 var timeString;
 var condonString;
 var cuetilloString;
+var partiesString;
+var scoreString;
 var timeText;
 
 
@@ -210,12 +212,16 @@ function create() {
 
     var style = { fill : "#FFFFFF" };
     timeText = game.add.text(10, 10, timeString, style);
-    cuetillosText = game.add.text(200, 10, cuetilloString, style);
-    condonesText = game.add.text(400, 10, condonString, style);
+    cuetillosText = game.add.text(100, 10, cuetilloString, style);
+    condonesText = game.add.text(300, 10, condonString, style);
+    partiesText = game.add.text(500, 10, partiesString, style);
+    scoreText = game.add.text(650, 10, scoreString, style);
 
     spriteText.addChild(timeText);
     spriteText.addChild(cuetillosText);
     spriteText.addChild(condonesText);
+    spriteText.addChild(partiesText);
+    spriteText.addChild(scoreText);
    
     seconds = 0;
     minutes = 0;
@@ -501,4 +507,6 @@ function updateTime() {
     timeText.text = timeString;
     condonesText.text = "Condones: " + condonCount;
     cuetillosText.text = "Cohetillos: " + cohetilloCount;
+    partiesText.text = "Fiestas: " + currentParties;
+    scoreText.text = "Score: " + score;
 }
