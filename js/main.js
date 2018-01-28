@@ -21,6 +21,8 @@ var cursors;
 var sprite;
 var tumbas;
 
+var spriteText
+
 var gameHeight = 40;
 var gameWidth  = 40;
 
@@ -68,6 +70,9 @@ function create() {
 	
 		sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
+
+    spriteText = game.add.sprite(0,0);
+    spriteText.fixedToCamera = true;
 
     turret = game.add.sprite(0, 0,'turret');
     turret.visible = false;
@@ -122,9 +127,10 @@ function create() {
 
 
     var style = { fill : "#FFFFFF" };
-    timeText = game.add.text(200, 200, timeString, style);
-   
+    timeText = game.add.text(10, 10, timeString, style);
 
+    spriteText.addChild(timeText);
+   
     seconds = 0;
     minutes = 0;
 
