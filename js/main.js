@@ -11,7 +11,10 @@ function preload() {
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
-    game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
+		game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
+		
+		game.load.spritesheet('drugstore', 'assets/red-cross.png');
+
 }
 
 var map;
@@ -55,6 +58,11 @@ var minutes;
 var seconds;
 
 var prevTime = 0;
+
+var set = new Set();
+
+var condonCount = 5;
+var cohetilloCount = 5; // #spanglish :V
 function create() {
 
     document.addEventListener('contextmenu', event => event.preventDefault());
@@ -67,8 +75,28 @@ function create() {
 
 		fiestas = game.add.group();
 		fiestas.enableBody = true;
-	
-		sprite = game.add.sprite(450, 300, 'car');
+
+		drugstores = game.add.group();
+		drugstores.enableBody = true;
+		for (let i = 0; i < 2; i++) {
+			let row = parseInt(Math.random() * 40);
+			while(row % 4) {
+				row--;
+			}
+			let column = parseInt(Math.random() * 40);
+			while(columnWasHouse(column) === -1) {
+				column--;
+			}
+			set.add(row + '-' + column);
+			let drugstore = game.add.sprite(row * 32, column * 32, 'drugstore');
+			drugstore.animations.add('on', [0, 0], 10, true);
+			game.physics.arcade.enable(drugstore);
+			drugstore['hasCondon'] = true;
+			drugstore.body.velocity.set(0);
+			drugstores.addChild(drugstore);
+		}	
+		
+		sprite = game.add.sprite(400, 200, 'car');
     sprite.anchor.setTo(0.5, 0.5);
 
     spriteText = game.add.sprite(0,0);
@@ -99,7 +127,7 @@ function create() {
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    bullets.createMultiple(100, 'bullet', 0, false);
+    bullets.createMultiple(condonCount, 'bullet', 0, false);
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
@@ -109,7 +137,7 @@ function create() {
     tumbaBullets = game.add.group();
     tumbaBullets.enableBody = true;
     tumbaBullets.physicsBodyType = Phaser.Physics.ARCADE;
-    tumbaBullets.createMultiple(100, 'tumbaBullet', 0, false);
+    tumbaBullets.createMultiple(5, 'tumbaBullet', 0, false);
     tumbaBullets.setAll('anchor.x', 0.5);
     tumbaBullets.setAll('anchor.y', 0.5);
     tumbaBullets.setAll('outOfBoundsKill', true);
@@ -227,6 +255,15 @@ function update() {
     game.physics.arcade.collide(sprite, layer);
 		game.physics.arcade.collide(bullets, layer, collisionHandler, null, this);
 		game.physics.arcade.collide(tumbaBullets, layer, collisionHandlerTumbaBullet, null, this);
+		drugstores.children.forEach(drugstore => {
+			if (drugstore['hasCondon'] && game.physics.arcade.distanceBetween(sprite, drugstore) < 60) {
+				bullets.createMultiple(3, 'bullet', 0, false);
+				condonCount += 3;
+				drugstore['hasCondon'] = false;
+				drugstores.remove(drugstore);
+			}
+		});
+		game.physics.arcade.collide(sprite, drugstores, collisionHandlerTumbaBullet, null, this);
 
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
