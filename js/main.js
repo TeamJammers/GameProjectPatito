@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(1280, 800, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
@@ -9,7 +9,7 @@ function preload() {
 
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
-    game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+    game.load.audio('chuta', 'assets/audio/chutaalegre.m4a');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
     game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
@@ -281,7 +281,7 @@ function bulletToTumba(tumba, bullet) {
 var lastTime = 0;
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
-		if (time > lastTime) {
+        if (time > lastTime) {
             lastTime = time;
             cholas.children.forEach(function(chola) {
                 chola['tiempo']--;
@@ -343,6 +343,12 @@ function update() {
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
 				sprite.kill();
+                lastTime = 0;
+                prevTime = 0;
+				cohetilloCount = 5;
+				condonCount = 5;
+				score = 0;
+				currentParties = 0;
                  this.game.state.restart();
 			});
 			game.physics.arcade.collide(tumba, layer);

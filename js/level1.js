@@ -348,7 +348,13 @@ update: function() {
 				tumba.body.velocity.set(0);
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
-				sprite.kill();
+                sprite.kill();
+                lastTime = 0;
+                prevTime = 0;
+				cohetilloCount = 5;
+				condonCount = 5;
+				score = 0;
+				currentParties = 0;
 			});
 			game.physics.arcade.collide(tumba, layer);
 			tumba.animations.play('tumbaRotate');
