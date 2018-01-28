@@ -4,7 +4,6 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles', 'assets/tmw_desert_spacing.png');
-    game.load.image('car', 'assets/pepino.png');
     game.load.image('bullet', 'assets/jam-condon.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
@@ -39,7 +38,7 @@ var nextFire = 0;
 var timeString;
 var timeText;
 
-var fiesta;
+var fiestas;
 
 var chuta;
 
@@ -49,40 +48,27 @@ var chuta;
 var minutes;
 var seconds;
 
-
+var prevTime = 0;
 function create() {
-
-    //title
-    var style = { font: "65px Arial", fill: "#52bace", align: "center" };
-    text = game.add.text(game.world.centerX, 100, "Bienvenidos al Carnaval 2018", style);
-    text.anchor.set(0.5);
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
     map = game.add.tilemap('desert');
-
     map.addTilesetImage('Desert', 'tiles');
-
     map.setCollision([ 3, 4, 5, 6 ]);
-
     layer = map.createLayer('Ground');
-
     layer.resizeWorld();
 
-    fiesta = game.add.sprite(0, 0, 'fiesta')
-    fiesta.animations.add('on', [0, 1], 10, true);
-
-    fiesta.animations.play('on');
-
-    sprite = game.add.sprite(450, 300, 'car');
+		fiestas = game.add.group();
+		fiestas.enableBody = true;
+	
+		sprite = game.add.sprite(450, 300, 'car');
     sprite.anchor.setTo(0.5, 0.5);
 
     turret = game.add.sprite(0, 0,'turret');
     turret.visible = false;
 
     turret.anchor.setTo(0.3, 0.5);
-    //audio
-    chuta = game.add.audio('chuta');
+    // audio
+    audioCarnaval = game.add.audio('chuta');
     // sprite.anchor.setTo(0.5, 0.5);
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -90,7 +76,7 @@ function create() {
 
     tumba = game.add.sprite(200, 360, 'tumba');
     tumba.animations.add('tumbaRotate', [0, 1, 2, 3], 2, true);
-		game.physics.enable(tumba);
+	game.physics.enable(tumba);
     game.physics.enable(sprite);
     game.camera.follow(sprite);
 
@@ -102,6 +88,7 @@ function create() {
     bullets.setAll('anchor.y', 0.5);
     bullets.setAll('outOfBoundsKill', true);
     bullets.setAll('checkWorldBounds', true);
+
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -115,6 +102,7 @@ function create() {
 
     var style = { fill : "#FFFFFF" };
     timeText = game.add.text(200, 200, timeString, style);
+   
 
     seconds = 0;
     minutes = 0;
@@ -125,12 +113,12 @@ function create() {
     var timer = game.time.create();
     timer.repeat(1 * Phaser.Timer.SECOND, 7200, updateTime, this);
     timer.start();
-    game.sound.setDecodedCallback(chuta, start, this);
+    game.sound.setDecodedCallback(audioCarnaval, start, this);
 }
 
 function start() {
-    chuta.play();
-    chuta.loopFull(0.5);
+    audioCarnaval.play();
+    audioCarnaval.loopFull(0.5);
 }
 
 function collisionHandler(bullet) {
@@ -140,8 +128,33 @@ function collisionHandler(bullet) {
     bullets.remove(bullet);
     // console.log(':O');
 }
-
+var ok = 0;
+var generateAfter = 30;
+function columnWasHouse(column) {
+	for (let i = 0; i < 4; i++) {
+		if (!((column - i )% 8)) {
+			return column;
+		}
+	}
+	return -1;
+}
 function update() {
+		const time = parseInt(minutes) * 60 + parseInt(seconds);
+		if (prevTime === time) { 
+			prevTime = time + generateAfter;
+			let row = parseInt(Math.random() * 40);
+			while(row % 4) {
+				row--;
+			}
+			let column = parseInt(Math.random() * 40);
+			while(columnWasHouse(column) === -1) {
+				column--;
+			}
+			let fiesta = game.add.sprite(row * 32, column * 32, 'fiesta');
+			fiesta.animations.add('on', [0, 0], 10, true);
+			fiesta.animations.play('on');
+			fiestas.addChild(fiesta);
+		}
 		if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {
 			game.physics.arcade.moveToObject(tumba, sprite, 220);
 		} else {
@@ -159,7 +172,6 @@ function update() {
 
     // Iniciando animacion de tumba
     tumba.animations.play('tumbaRotate');
-
 
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
@@ -202,8 +214,7 @@ function update() {
     turret.y = sprite.y;
     turret.rotation = game.physics.arcade.angleToPointer(turret);
 
-    if (game.input.activePointer.isDown)
-    {
+    if (game.input.activePointer.isDown) {
         //  Boom!
         fire();
     }
@@ -211,9 +222,7 @@ function update() {
 }
 
 function render() {
-    // game.debug.text('Click to fill tiles', 32, 32, 'rgb(0,0,0)');
-    // game.debug.text('Tile X: ' + layer.getTileX(sprite.x), 32, 48, 'rgb(0,0,0)');
-    // game.debug.text('Tile Y: ' + layer.getTileY(sprite.y), 32, 64, 'rgb(0,0,0)');
+    
 }
 
 // Funcion disparar condon

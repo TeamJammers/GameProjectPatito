@@ -13,3 +13,9 @@ Videojuego Serio para el Global Game Jam
 - Ingresar al localhost puerto 8000
   ```localhost:8000```
 - A jugar!!!
+
+## Deploy en https://teamjammers.github.io/GameProjectPatito/
+
+- git checkout gh-pages
+- git merge master
+- git push
