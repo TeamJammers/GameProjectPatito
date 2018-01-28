@@ -53,7 +53,7 @@ preload: function() {
  scoreString: null,
  timeText: null,
 
-
+timeReopen: 20,
  fiestas: null,
 
  chutas: null,
@@ -109,8 +109,8 @@ create: function() {
 			drugstore.body.velocity.set(0);
 			this.drugstores.addChild(drugstore);
 		}
-		stores = game.add.group();
-		stores.enableBody = true;
+		this.stores = game.add.group();
+		this.stores.enableBody = true;
 		let lim = 2;
 		for (let i = 0; i < lim; i++) {
 			let row = parseInt(Math.random() * 40);
@@ -131,7 +131,7 @@ create: function() {
 			game.physics.arcade.enable(store);
 			store['hasCondon'] = true;
 			store.body.velocity.set(0);
-			stores.addChild(store);
+			this.stores.addChild(store);
 		}	
 		
 		sprite = game.add.sprite(400, 200, 'car');
@@ -282,8 +282,35 @@ bulletToTumba: function(tumba, bullet) {
 },
 lastTime : 0,
 update: function() {
+    const self = this;
 		const time = parseInt(this.minutes) * 60 + parseInt(this.seconds);
-        console.log(time, this.lasTime)
+        if (this.timeReopen === time) {
+            this.timeReopen += 20;
+            this.drugstoreSet.forEach(coordinates => {
+                console.log(coordinates);
+                let row = +coordinates.split('-')[0];
+                let column = +coordinates.split('-')[1];
+                let drugstore = game.add.sprite(row * 32, column * 32, 'drugstore');
+                drugstore.animations.add('on', [0, 0], 10, true);
+                game.physics.arcade.enable(drugstore);
+                drugstore['hasCondon'] = true;
+                drugstore.body.velocity.set(0);
+                self.drugstores.addChild(drugstore);
+            });
+            this.storeSet.forEach(coordinates => {
+                let row = +coordinates.split('-')[0];
+                let column = +coordinates.split('-')[1];
+                console.log(coordinates, row, column);
+                let store = game.add.sprite(row * 32, column * 32, 'store');
+                store.animations.add('on', [0, 0], 10, true);
+                game.physics.arcade.enable(store);
+                store['hasCondon'] = true;
+                store.body.velocity.set(0);
+                console.log(self.stores);
+                console.log(self);
+                self.stores.addChild(store);
+            });
+        }
 		if (time > this.lastTime) {
             this.lastTime = time;
             this.cholas.children.forEach((chola)=> {
@@ -301,8 +328,8 @@ update: function() {
 			this.fiestas.children.forEach(fiesta => {
 				fiesta['score'] -= 5;
 				if (!fiesta['score']) {
-					if (currentParties > 0) {
-						currentParties--;
+					if (this.currentParties > 0) {
+						this.currentParties--;
 					}
 					this.fiestas.remove(fiesta);
 				}
@@ -348,13 +375,13 @@ update: function() {
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
                 sprite.kill();
-                lastTime = 0;
-                prevTime = 0;
-				cohetilloCount = 5;
-				condonCount = 5;
-                score = 0;
+                this.lastTime = 0;
+                this.prevTime = 0;
+				this.cohetilloCount = 5;
+				this.condonCount = 5;
+                this.score = 0;
                 
-				currentParties = 0;
+				this.currentParties = 0;
                 
                 this.game.state.restart();
             });
@@ -374,12 +401,12 @@ update: function() {
 			}
 		});
 
-		stores.children.forEach(store => {
+		this.stores.children.forEach(store => {
 			if (store['hasCondon'] && game.physics.arcade.distanceBetween(sprite, store) < 60) {
 				this.tumbaBullets.createMultiple(5, 'tumbaBullet', 0, false);
 				this.cohetilloCount += 5;
 				store['hasCondon'] = false;
-				stores.remove(store);
+				this.stores.remove(store);
 			}
 		});
 
@@ -395,7 +422,7 @@ update: function() {
 
     if (this.cursors.left.isDown || wasd.left.isDown) {
         sprite.animations.play('left');
-        if(currentX == 0) {justPressed
+        if(currentX == 0) {
             sprite.body.velocity.x = 0;
         } else {
             sprite.body.velocity.x -= 200;
