@@ -14,6 +14,7 @@ function preload() {
 		game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		
 		game.load.spritesheet('drugstore', 'assets/red-cross.png');
+		game.load.spritesheet('store', 'assets/tienda-cuetillo.png');
 
 }
 
@@ -51,6 +52,9 @@ var fiestas;
 
 var chuta;
 
+var drugstores;
+var stores;
+
 
 //time of level
  
@@ -59,8 +63,8 @@ var seconds;
 
 var prevTime = 0;
 
-var set = new Set();
-
+var drugstoreSet = new Set();
+var storeSet = new Set();
 var condonCount = 5;
 var cohetilloCount = 5; // #spanglish :V
 function create() {
@@ -87,13 +91,37 @@ function create() {
 			while(columnWasHouse(column) === -1) {
 				column--;
 			}
-			set.add(row + '-' + column);
+			drugstoreSet.add(row + '-' + column);
 			let drugstore = game.add.sprite(row * 32, column * 32, 'drugstore');
 			drugstore.animations.add('on', [0, 0], 10, true);
 			game.physics.arcade.enable(drugstore);
 			drugstore['hasCondon'] = true;
 			drugstore.body.velocity.set(0);
 			drugstores.addChild(drugstore);
+		}
+		stores = game.add.group();
+		stores.enableBody = true;
+		let lim = 2;
+		for (let i = 0; i < lim; i++) {
+			let row = parseInt(Math.random() * 40);
+			while(row % 4) {
+				row--;
+			}
+			let column = parseInt(Math.random() * 40);
+			while(columnWasHouse(column) === -1) {
+				column--;
+			}
+			if (drugstoreSet.has(row + '-' + column)) {
+				lim++;
+				continue;
+			}
+			storeSet.add(row + '-' + column);
+			let store = game.add.sprite(row * 32, column * 32, 'store');
+			store.animations.add('on', [0, 0], 10, true);
+			game.physics.arcade.enable(store);
+			store['hasCondon'] = true;
+			store.body.velocity.set(0);
+			stores.addChild(store);
 		}	
 		
 		sprite = game.add.sprite(400, 200, 'car');
@@ -263,6 +291,16 @@ function update() {
 				drugstores.remove(drugstore);
 			}
 		});
+
+		stores.children.forEach(store => {
+			if (store['hasCondon'] && game.physics.arcade.distanceBetween(sprite, store) < 60) {
+				tumbaBullets.createMultiple(5, 'tumbaBullet', 0, false);
+				cohetilloCount += 5;
+				store['hasCondon'] = false;
+				stores.remove(store);
+			}
+		});
+
 		game.physics.arcade.collide(sprite, drugstores, collisionHandlerTumbaBullet, null, this);
 
     sprite.body.velocity.x = 0;
