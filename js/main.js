@@ -281,7 +281,6 @@ function bulletToTumba(tumba, bullet) {
 var lastTime = 0;
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
-        console.log(time);
         if (time > lastTime) {
             lastTime = time;
             cholas.children.forEach(function(chola) {
@@ -345,6 +344,7 @@ function update() {
 			game.physics.arcade.collide(sprite, tumba, () => {
 				sprite.kill();
                 lastTime = 0;
+                prevTime = 0;
 				cohetilloCount = 5;
 				condonCount = 5;
 				score = 0;
