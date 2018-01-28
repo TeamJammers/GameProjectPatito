@@ -9,7 +9,7 @@ function preload() {
 
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
-    game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
+    game.load.audio('chuta', 'assets/audio/chutaalegre.m4a');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
     game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
