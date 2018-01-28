@@ -343,6 +343,7 @@ function update() {
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
 				sprite.kill();
+                 this.game.state.restart();
 			});
 			game.physics.arcade.collide(tumba, layer);
 			tumba.animations.play('tumbaRotate');
