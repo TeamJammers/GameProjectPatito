@@ -11,11 +11,13 @@ function preload() {
     game.load.spritesheet('car', 'assets/dude.png', 32, 48);
     game.load.audio('chuta', 'assets/audio/chutaalegre.mp3');
     game.load.spritesheet('tumba', 'assets/tumba.png', 31, 48);
+    game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		game.load.spritesheet('fiesta', 'assets/fiesta.png', 32, 32);
 		
 		game.load.spritesheet('drugstore', 'assets/red-cross.png');
 		game.load.spritesheet('store', 'assets/tienda-cuetillo.png');
-
+        game.load.spritesheet('chola', 'assets/chola.png', 32, 32);
+        game.load.spritesheet('chuta-paceno', 'assets/chuta.png', 32, 32);
 }
 
 var map;
@@ -52,7 +54,10 @@ var timeText;
 
 var fiestas;
 
+var chutas;
+var cholas;
 var chuta;
+var chola;
 
 var drugstores;
 var stores;
@@ -174,6 +179,24 @@ function create() {
     tumbaBullets.setAll('outOfBoundsKill', true);
     tumbaBullets.setAll('checkWorldBounds', true);
 
+    cholas = game.add.group();
+    cholas.createMultiple(10, 'chola', 0, false);
+    cholas.enableBody = true;
+    cholas.physicsBodyType = Phaser.Physics.ARCADE;
+    cholas.setAll('anchor.x', 0.5);
+    cholas.setAll('anchor.y', 0.5);
+    cholas.setAll('outOfBoundsKill', true);
+    cholas.setAll('checkWorldBounds', true);
+
+    chutas = game.add.group();
+    chutas.createMultiple(10, 'chuta-paceno', 0, false);
+
+    // chola = game.add.sprite(368, 200, 'chola');
+    // chola.animations.add('dancing', [0, 1], 5, true);
+    // chola.animations.play('dancing');
+    // chuta = game.add.sprite(320, 200, 'chuta-paceno');
+    // chuta.animations.add('dancing', [0, 1], 5, true);
+    // chuta.animations.play('dancing');
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -251,7 +274,19 @@ var lastTime = 0;
 function update() {
 		const time = parseInt(minutes) * 60 + parseInt(seconds);
 		if (time > lastTime) {
-			lastTime = time;
+            lastTime = time;
+            cholas.children.forEach(function(chola) {
+                chola['tiempo']--;
+                if(chola['tiempo'] == 0) {
+                    cholas.remove(chola);
+                }
+            });
+            chutas.children.forEach(function(chuta) {
+                chuta['tiempo']--;
+                if(chuta['tiempo'] == 0) {
+                    chutas.remove(chuta);
+                }
+            });
 			fiestas.children.forEach(fiesta => {
 				fiesta['score'] -= 5;
 				if (!fiesta['score']) {
@@ -288,7 +323,7 @@ function update() {
 		}
 		game.physics.arcade.collide(tumbas, tumbaBullets, bulletToTumba, null, this);
 		game.physics.arcade.collide(fiestas, bullets, condonToFiestas, null, this);
-		game.physics.arcade.collide(tumbas, bullets, condonToTumba, null, this);
+        game.physics.arcade.collide(tumbas, bullets, condonToTumba, null, this);
 		tumbas.children.forEach(tumba => {
 			
 			if (game.physics.arcade.distanceBetween(tumba, sprite) > 0 && game.physics.arcade.distanceBetween(tumba, sprite) < 160) {	
@@ -382,7 +417,9 @@ function update() {
     if(game.input.activePointer.rightButton.isDown){
         fireTumba();
     }
-
+    if(game.input.activePointer.middleButton.isDown){
+        superPoder();
+    }
 }
 
 function render() {
@@ -399,11 +436,40 @@ function fire () {
     }
 }
 
-function fireTumba(){
+function superPoder() {
+    var dx = [-1, 0 , 1, 1,  1, 0, -1, -1];
+    var dy = [ 1, 1 , 1, 0, -1, -1, -1, 0];
+    var dst = 30;
+    var objs = [];
+    if (game.time.now > nextFire) { 
+        nextFire = game.time.now + fireRate;
+        var pepinoX = sprite.x;
+        var pepinoY = sprite.y;
+        for(var i = 0 ; i < 8 ; i++) {
+            if(i < 4) {
+                var chola = game.add.sprite(pepinoX + dx[i] * dst, pepinoY + dy[i] * dst, 'chola');
+                game.physics.arcade.enable(chola);
+                game.physics.arcade.collide(chola, tumbas, bulletToTumba, null, this);
+                chola.animations.add('dancing', [0, 1], 5, true);
+                chola.animations.play('dancing');
+                
+                chola['tiempo'] = 1;
+                cholas.addChild(chola);
+            } else {
+                var chuta = game.add.sprite(pepinoX + dx[i] * dst, pepinoY + dy[i] * dst, 'chuta-paceno');
+                chuta.animations.add('dancing', [0, 1], 5, true);
+                chuta.animations.play('dancing');
+                chuta['tiempo'] = 1;
+                chutas.addChild(chuta);
+            }
+        }
+    }
+}
 
+function fireTumba(){
   if (game.time.now > nextFire && tumbaBullets.countDead() > 0 && cohetilloCount > 0) { 
       cohetilloCount--;
-     nextFire = game.time.now + fireRate;
+      nextFire = game.time.now + fireRate;
       var tumbaBullet = tumbaBullets.getFirstExists(false);
       tumbaBullet.reset(tumbaTurret.x, tumbaTurret.y);
       tumbaBullet.rotation = game.physics.arcade.moveToPointer(tumbaBullet, 1000, game.input.activePointer, 500);
