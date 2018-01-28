@@ -105,6 +105,13 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
+    wasd = {
+          up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+          down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+          left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+          right: game.input.keyboard.addKey(Phaser.Keyboard.D),
+        };
+
 
     var style = { fill : "#FFFFFF" };
     timeText = game.add.text(200, 200, timeString, style);
@@ -157,15 +164,15 @@ function update() {
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
 
-    if (cursors.left.isDown) {
+    if (cursors.left.isDown || wasd.left.isDown) {
         sprite.animations.play('left');
-        if(currentX == 0) {
+        if(currentX == 0) {justPressed
             sprite.body.velocity.x = 0;
         } else {
             sprite.body.velocity.x -= 200;
         }
     }
-    if (cursors.right.isDown) {
+    if (cursors.right.isDown || wasd.right.isDown) {
         sprite.animations.play('right');
         if(currentX == gameWidth - 1) {
             sprite.body.velocity.x = 0;
@@ -174,7 +181,7 @@ function update() {
         }
     }
 
-    if (cursors.up.isDown) {
+    if (cursors.up.isDown || wasd.up.isDown) {
         sprite.animations.play('up');
         if(currentY == 0) {
             sprite.body.velocity.y = 0;
@@ -182,7 +189,7 @@ function update() {
             sprite.body.velocity.y -= 200;
         }
     }
-    if (cursors.down.isDown) {
+    if (cursors.down.isDown || wasd.down.isDown) {
         sprite.animations.play('down');
         if(currentY == gameHeight - 1) {
             sprite.body.velocity.y = 0;
@@ -229,6 +236,8 @@ function updateTime() {
     seconds = Number.parseInt(seconds);
     minutes = Number.parseInt(minutes);
     if( seconds == 60){
+
+        
         seconds = 0;
         minutes +=1; 
     }
