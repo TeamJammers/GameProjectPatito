@@ -1,3 +1,12 @@
+function setScore(score) {
+    if(!score) score = 0;
+    var best = localStorage.getItem('bestScore');
+    best = Math.max(best, score);
+    localStorage.setItem('bestScore', best);
+    var div = document.getElementById('score');
+    div.innerHTML = "<h1 style='padding-top: 50px;'> Best Score " + best + "</h1>"
+}
+setScore();
 var level1 = {
 preload: function() {
     game.load.tilemap('desert', 'assets/desert.json', null, Phaser.Tilemap.TILED_JSON);
@@ -375,6 +384,7 @@ update: function() {
 			}
 			game.physics.arcade.collide(sprite, tumba, () => {
                 sprite.kill();
+                setScore(this.score);
                 this.lastTime = 0;
                 this.prevTime = 0;
 				this.cohetilloCount = 5;
