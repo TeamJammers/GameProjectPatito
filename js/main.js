@@ -165,7 +165,7 @@ function update() {
     var currentX = layer.getTileX(sprite.x);
     var currentY = layer.getTileY(sprite.y);
 
-    if (cursors.left.isDown || cursors.A.isDown) {
+    if (cursors.left.isDown) {
         sprite.animations.play('left');
         if(currentX == 0) {
             sprite.body.velocity.x = 0;
