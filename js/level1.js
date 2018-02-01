@@ -83,7 +83,7 @@ timeReopen: 20,
  chola: null,
  drugstores: null,
  stores: null,
-
+ audioCarnaval: null,
 
 //time of level
  
@@ -171,7 +171,11 @@ create: function() {
 
 
     // audio
-    audioCarnaval = game.add.audio('chuta');
+    if(!this.audioCarnaval) {
+        this.audioCarnaval = game.add.audio('chuta');
+        this.audioCarnaval.play();
+        this.audioCarnaval.loopFull(1);
+    }
     // sprite.anchor.setTo(0.5, 0.5);
     sprite.animations.add('left', [0, 1, 2, 3], 10, true);
     sprite.animations.add('turn', [4], 20, true);
@@ -256,12 +260,6 @@ create: function() {
     var timer = game.time.create();
     timer.repeat(1 * Phaser.Timer.SECOND, 7200, this.updateTime, this);
     timer.start();
-    game.sound.setDecodedCallback(audioCarnaval, this.start, this);
-},
-
- start: function() {
-    audioCarnaval.play();
-    audioCarnaval.loopFull(1);
 },
 
 collisionHandler: function(bullet) {
