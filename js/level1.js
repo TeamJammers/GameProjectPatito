@@ -1,10 +1,21 @@
+function goFullScreen() {
+    if (game.scale.isFullScreen)
+    {
+        game.scale.stopFullScreen();
+    }
+    else
+    {
+        game.scale.startFullScreen(false);
+    }
+}
+
 function setScore(score) {
     if(!score) score = 0;
-    var best = localStorage.getItem('bestScore');
+    /* var best = localStorage.getItem('bestScore');
     best = Math.max(best, score);
     localStorage.setItem('bestScore', best);
     var div = document.getElementById('score');
-    div.innerHTML = "<h1 style='padding-top: 50px;'> Best Score " + best + "</h1>"
+    div.innerHTML = "<h1 style='padding-top: 50px;'> Best Score " + best + "</h1>" */
 }
 setScore();
 var level1 = {
