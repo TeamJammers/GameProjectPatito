@@ -2,9 +2,11 @@
 function Pepino(x, y) {
     this.key = 'pepino';
     this.sprite = game.add.sprite(x, y, this.key);
+    this.sprite.animations.add('stop', [4], 10, true);
     this.sprite.animations.add('left', [0, 1, 2, 3], 10, true);
-    this.sprite.animations.add('turn', [4], 20, true);
-    this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
+    this.sprite.animations.add('down', [8, 9], 10, true);
+    this.sprite.animations.add('up', [10, 11], 10, true);
+    this.sprite.animations.add('right', [5, 6, 7], 10, true);
     game.physics.arcade.enable(this.sprite);
     game.camera.follow(this.sprite);
 }
@@ -34,6 +36,10 @@ Pepino.prototype.stop = function() {
     this.setYVelocity(0);
 }
 
+Pepino.prototype.showStopAnimation = function() {
+    this.sprite.animations.play('stop');
+}
+
 Pepino.prototype.goLeft = function() {
     this.sprite.animations.play('left');
     this.setXVelocity(-200);
@@ -45,11 +51,11 @@ Pepino.prototype.goRight = function() {
 }
 
 Pepino.prototype.goUp = function() {
-    //this.sprite.animations.play('up');
+    this.sprite.animations.play('up');
     this.setYVelocity(-200);
 }
 
 Pepino.prototype.goDown = function() {
-    //this.sprite.animations.play('down');
+    this.sprite.animations.play('down');
     this.setYVelocity(200);
 }
